@@ -107,6 +107,14 @@ func toggleShuffle() {
 	mpvClient.SetProperty("shuffle", !status)
 }
 
+func back10Seconds() {
+	mpvClient.Seek(-10)
+}
+
+func forward10Seconds() {
+	mpvClient.Seek(+10)
+}
+
 func getPlayerStatus() PlayerStatus {
 	if mpvClient == nil {
 		return PlayerStatus{}

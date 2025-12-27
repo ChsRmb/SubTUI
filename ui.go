@@ -175,18 +175,21 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "Q":
-			if m.viewMode == viewList {
-				m.viewMode = viewQueue
-				m.cursorMain = m.queueIndex
-				if m.cursorMain > 2 {
-					m.mainOffset = m.cursorMain - 2
+			if m.focus != focusSearch {
+
+				if m.viewMode == viewList {
+					m.viewMode = viewQueue
+					m.cursorMain = m.queueIndex
+					if m.cursorMain > 2 {
+						m.mainOffset = m.cursorMain - 2
+					} else {
+						m.mainOffset = 0
+					}
 				} else {
+					m.viewMode = viewList
+					m.cursorMain = 0
 					m.mainOffset = 0
 				}
-			} else {
-				m.viewMode = viewList
-				m.cursorMain = 0
-				m.mainOffset = 0
 			}
 
 		case "p": // Play/pause
@@ -194,11 +197,50 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				togglePause()
 			}
 
-		case "n": // Next
+		case "n": // Next song
 			return m, m.playNext()
 
-		case "b": // Previous
+		case "b": // Previous song
 			return m, m.playPrev()
+
+		case "N": // Play next
+			selectedSong := m.songs[m.cursorMain]
+
+			if len(m.queue) == 0 {
+				m.queue = []Song{selectedSong}
+				m.queueIndex = 0
+			} else {
+				insertAt := m.queueIndex + 1
+				tail := append([]Song{}, m.queue[insertAt:]...)
+				m.queue = append(m.queue[:insertAt], append([]Song{selectedSong}, tail...)...)
+			}
+
+		case "a": // Add to queue
+			m.queue = append(m.queue, m.songs[m.cursorMain])
+
+		case "d": // Delete from queue
+			m.queue = append(m.queue[:m.queueIndex], m.queue[m.queueIndex+1:]...)
+
+		case "D": // Clear queue
+			m.queue = nil
+
+		case "ctrl+k": // Move up in queue
+			tempSong := m.queue[m.cursorMain]
+
+			m.queue[m.cursorMain] = m.queue[m.cursorMain-1]
+			m.queue[m.cursorMain-1] = tempSong
+
+		case "ctrl+j": // Move down in queue
+			tempSong := m.queue[m.cursorMain]
+
+			m.queue[m.cursorMain] = m.queue[m.cursorMain+1]
+			m.queue[m.cursorMain+1] = tempSong
+
+		case ",": // -10sec
+			back10Seconds()
+
+		case ";": // +10sec
+			forward10Seconds()
 		}
 
 	case songsResultMsg:
@@ -311,7 +353,13 @@ func (m model) View() string {
 	if m.loading {
 		mainContent = "\n  Searching your library..."
 	} else if len(targetList) == 0 {
-		mainContent = "\n  Use the search bar to find music."
+		if m.viewMode == viewList {
+			mainContent = "\n  Use the search bar to find music."
+
+		} else if m.viewMode == viewQueue {
+			mainContent = "\n  Queue is empty."
+		}
+
 	} else {
 		availableWidth := mainWidth - 4
 		colTitle := int(float64(availableWidth) * 0.40)
@@ -338,16 +386,16 @@ func (m model) View() string {
 		start := m.mainOffset
 
 		end := start + visibleRows
-		if end >= len(m.songs) {
-			end = len(m.songs)
+		if end >= len(targetList) {
+			end = len(targetList)
 		}
 
 		for i := start; i <= end; i++ {
-			if i >= len(m.songs) {
+			if i >= len(targetList) {
 				break
 			}
 
-			song := m.songs[i]
+			song := targetList[i]
 
 			cursor := "  "
 			style := lipgloss.NewStyle()

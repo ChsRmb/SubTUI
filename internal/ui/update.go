@@ -20,7 +20,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			return m, tea.Quit
+			return quit(m)
 
 		case "tab":
 			m = cycleFocus(m, true)
@@ -150,6 +150,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, cmd
+}
+
+func quit(m model) (tea.Model, tea.Cmd) {
+	if m.focus != focusSearch {
+		return m, tea.Quit
+	}
+
+	return m, nil
 }
 
 // Cycles Focus: Search -> Sidebar -> Main -> Song -> Search

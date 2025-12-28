@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"time"
 
-	"git.punjwani.pm/Mattia/DepthTUI/internal/api"
+	"git.punjwani.pm/Mattia/SubTUI/internal/api"
 	"github.com/gdrens/mpv"
 )
 
@@ -26,7 +26,7 @@ type PlayerStatus struct {
 }
 
 func InitPlayer() error {
-	socketPath := "/tmp/depthtui_mpv_socket"
+	socketPath := "/tmp/subtui_mpv_socket"
 
 	exec.Command("pkill", "-f", socketPath).Run()
 	time.Sleep(200 * time.Millisecond)

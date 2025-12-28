@@ -1,4 +1,4 @@
-module git.punjwani.pm/Mattia/DepthTUI
+module git.punjwani.pm/Mattia/SubTUI
 
 go 1.25.5
 

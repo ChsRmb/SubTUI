@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"git.punjwani.pm/Mattia/DepthTUI/internal/api"
+	"git.punjwani.pm/Mattia/SubTUI/internal/api"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -107,7 +107,7 @@ func truncate(s string, w int) string {
 
 func loginView(m model) string {
 	content := lipgloss.JoinVertical(lipgloss.Center,
-		loginHeaderStyle.Render("Welcome to DepthTUI"),
+		loginHeaderStyle.Render("Welcome to SubTUI"),
 		"", // Spacer
 		m.loginInputs[0].View(),
 		m.loginInputs[1].View(),

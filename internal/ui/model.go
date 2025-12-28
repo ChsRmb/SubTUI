@@ -1,8 +1,8 @@
 package ui
 
 import (
-	"git.punjwani.pm/Mattia/DepthTUI/internal/api"
-	"git.punjwani.pm/Mattia/DepthTUI/internal/player"
+	"git.punjwani.pm/Mattia/SubTUI/internal/api"
+	"git.punjwani.pm/Mattia/SubTUI/internal/player"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"

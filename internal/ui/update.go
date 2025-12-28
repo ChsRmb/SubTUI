@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"time"
 
-	"git.punjwani.pm/Mattia/DepthTUI/internal/api"
-	"git.punjwani.pm/Mattia/DepthTUI/internal/player"
+	"git.punjwani.pm/Mattia/SubTUI/internal/api"
+	"git.punjwani.pm/Mattia/SubTUI/internal/player"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/gen2brain/beeep"
 )
@@ -131,7 +131,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				go func() {
 					artBytes, err := api.SubsonicCoverArt(currentSong.ID)
 
-					title := "DepthTUI"
+					title := "SubTUI"
 					description := fmt.Sprintf("Playing %s - %s", currentSong.Title, currentSong.Artist)
 
 					if err != nil {

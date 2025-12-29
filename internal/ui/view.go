@@ -107,6 +107,10 @@ func truncate(s string, w int) string {
 }
 
 func LimitString(s string, limit int) string {
+	if limit <= 0 {
+		return ""
+	}
+
 	width := runewidth.StringWidth(s)
 
 	if width <= limit {

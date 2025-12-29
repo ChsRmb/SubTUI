@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"syscall"
 	"time"
 
 	"github.com/MattiaPun/SubTUI/internal/api"
@@ -60,7 +61,7 @@ func InitPlayer() error {
 
 func ShutdownPlayer() {
 	if mpvCmd != nil {
-		_ = mpvCmd.Process.Kill()
+		_ = mpvCmd.Process.Signal(syscall.SIGTERM)
 	}
 }
 

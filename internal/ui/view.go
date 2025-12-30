@@ -446,17 +446,17 @@ func mainArtistContent(m model, mainWidth int, mainHeight int) string {
 
 func footerContent(m model) string {
 	title := ""
-	artist := ""
+	artistAlbumText := ""
 
 	if m.playerStatus.Title == "<nil>" {
 		title = "Nothing playing"
-		artist = ""
+		artistAlbumText = ""
 	} else if strings.Contains(m.playerStatus.Title, "stream?c=SubTUI") {
 		title = "Loading..."
-		artist = ""
+		artistAlbumText = ""
 	} else {
 		title = m.playerStatus.Title
-		artist = m.playerStatus.Artist + " - " + m.playerStatus.Album
+		artistAlbumText = m.playerStatus.Artist + " - " + m.playerStatus.Album
 	}
 
 	barWidth := m.width - 20
@@ -485,27 +485,28 @@ func footerContent(m model) string {
 	currStr := formatDuration(int(m.playerStatus.Current))
 	durStr := formatDuration(int(m.playerStatus.Duration))
 
-	topRow := lipgloss.NewStyle().Bold(true).Foreground(highlight).Render("  " + LimitString(title, m.width-4))
-	bottowRowArtistAlbum := lipgloss.NewStyle().Foreground(subtle).Render("  " + LimitString(artist, m.width-4))
-
 	loopText := ""
 	switch m.loopMode {
 	case LoopNone:
 		loopText = ""
 	case LoopAll:
-		loopText = "Loop all"
+		loopText = "[Loop all]"
 	case LoopOne:
-		loopText = "Loop one"
+		loopText = "[Loop one]"
 	}
 
-	gapWidth := m.width - lipgloss.Width(bottowRowArtistAlbum) - 2
-
-	if gapWidth < 0 {
-		gapWidth = 0
+	bottomRowGap := 0
+	bottomRowSpaceTaken := 2 + 3 + 3 + len(artistAlbumText) + len(loopText) // 2: border, 3: spacing, 3: spacing
+	if artistAlbumText != "" && m.width != 0 && m.width-bottomRowSpaceTaken > 0 {
+		bottomRowGap = m.width - bottomRowSpaceTaken
+	} else if m.width != 0 {
+		bottomRowGap = m.width - 2 - 3 - 3 - len(loopText)
 	}
 
-	bottomRowLoop := lipgloss.NewStyle().Width(gapWidth).Align(lipgloss.Right).Foreground(subtle).Render(loopText)
-	bottomRow := lipgloss.JoinHorizontal(lipgloss.Top, bottowRowArtistAlbum, bottomRowLoop)
+	bottomRowText := artistAlbumText + strings.Repeat(" ", bottomRowGap) + loopText
+
+	topRow := lipgloss.NewStyle().Bold(true).Foreground(highlight).Render("   " + LimitString(title, m.width-4))
+	bottomRow := lipgloss.NewStyle().Foreground(subtle).Render("   " + LimitString(bottomRowText, m.width-4))
 
 	rawProgress := fmt.Sprintf("%s %s %s",
 		currStr,

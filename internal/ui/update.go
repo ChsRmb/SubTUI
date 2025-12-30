@@ -98,6 +98,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "J":
 			m = mediaSongDownQueue(m)
 
+		case "w":
+			m = mediaRestartSong(m)
+
 		case ",":
 			m = mediaSeekForward(m)
 
@@ -576,6 +579,14 @@ func mediaSongDownQueue(m model) model {
 		m.queue[m.cursorMain+1] = tempSong
 
 		m.cursorMain++
+	}
+
+	return m
+}
+
+func mediaRestartSong(m model) model {
+	if m.focus != focusSearch {
+		player.RestartSong()
 	}
 
 	return m

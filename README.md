@@ -62,6 +62,7 @@ go build .
 | `Enter`      	| Play selection / Open Album              	|
 | `S`          	| Shuffle Queue (Keeps current song first) 	|
 | `L`          	| Toggle Loop (None → All → One)           	|
+| `w`          	| Restart song                          	|
 | `.`          	| Forward 10 seconds                       	|
 | `,`          	| Rewind 10 seconds                        	|
 

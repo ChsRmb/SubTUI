@@ -37,6 +37,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return login(m, msg)
 		}
 
+		if msg.String() == "g" {
+			if m.lastKey == "g" {
+				return navigateTop(m), nil
+			} else {
+				m.lastKey = "g"
+				return m, nil
+			}
+		} else {
+			m.lastKey = ""
+		}
+
 		switch msg.String() {
 		case "q":
 			return quit(m, msg)
@@ -55,6 +66,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "backspace":
 			return goBack(m, msg)
+
+		case "G":
+			m = navigateBottom(m)
 
 		case "up", "k":
 			m = navigateUp(m)
@@ -361,6 +375,7 @@ func enter(m model) (tea.Model, tea.Cmd) {
 
 		m.loading = true
 		m.focus = focusMain
+		m.viewMode = viewList
 
 		if m.cursorSide < albumOffset {
 			m.displayMode = displayAlbums
@@ -409,6 +424,46 @@ func goBack(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, nil
+}
+
+func navigateTop(m model) model {
+	switch m.focus {
+	case focusMain:
+		m.cursorMain = 0
+		m.mainOffset = 0
+	case focusSidebar:
+		m.cursorSide = 0
+	}
+
+	return m
+}
+
+func navigateBottom(m model) model {
+	switch m.focus {
+	case focusMain:
+
+		listLen := 0
+		switch m.displayMode {
+		case displaySongs:
+			listLen = len(m.songs)
+		case displayAlbums:
+			listLen = len(m.albums)
+		case displayArtist:
+			listLen = len(m.artists)
+		}
+
+		m.cursorMain = listLen - 1
+		if m.height-17 >= 17 && listLen >= 17 {
+			m.mainOffset = listLen - 17
+		} else {
+			m.mainOffset = 0
+		}
+
+	case focusSidebar:
+		m.cursorSide = len(albumTypes) - 1 + len(m.playlists) - 1
+	}
+
+	return m
 }
 
 func navigateUp(m model) model {

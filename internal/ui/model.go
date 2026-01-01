@@ -117,6 +117,9 @@ type model struct {
 	// Login State
 	loginInputs []textinput.Model
 	loginFocus  int
+
+	// Input State
+	lastKey string
 }
 
 type songsResultMsg struct {
@@ -175,6 +178,7 @@ func InitialModel() model {
 		starredMap:       make(map[string]bool),
 		lastPlayedSongID: "",
 		loginInputs:      initialLoginInputs(),
+		lastKey:          "",
 	}
 }
 

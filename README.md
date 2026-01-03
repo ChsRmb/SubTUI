@@ -94,7 +94,8 @@ go build .
 | Key | Action                   |
 | --- | ------------------------ |
 | `Q` | Toggle queue             |
-| `a` | Add song to queue        |
+| `N` | Queue next               |
+| `a` | Queue last               |
 | `d` | Remove song from queue   |
 | `D` | Clear queue              |
 | `K` | Move song up (Reorder)   |

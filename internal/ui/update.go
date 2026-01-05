@@ -227,7 +227,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		windowTitle := "SubTUI"
-		if m.playerStatus.Title != "" && m.playerStatus.Title != "<nil>" {
+		if m.playerStatus.Title != "" && m.playerStatus.Title != "<nil>" && !strings.Contains(m.playerStatus.Title, "stream?c=SubTUI") {
 			windowTitle = fmt.Sprintf("%s - %s", m.playerStatus.Title, m.playerStatus.Artist)
 		}
 

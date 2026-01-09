@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"strings"
@@ -144,6 +145,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case loginResultMsg:
+		if msg.err != nil {
+			log.Printf("[Login] Failure: %v", msg.err)
+		} else {
+			log.Printf("[Login] Success. Switching to Main View.")
+		}
+
 		m.loading = false
 		if msg.err != nil { // login failed
 			errMsg := msg.err.Error()

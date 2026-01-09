@@ -1,7 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"io"
+	"log"
 	"os"
 
 	"github.com/MattiaPun/SubTUI/internal/api"
@@ -12,6 +15,25 @@ import (
 )
 
 func main() {
+	// Debug flag
+	debug := flag.Bool("debug", false, "Enable debug logging to subtui.log")
+	flag.Parse()
+
+	if *debug {
+		f, err := tea.LogToFile("subtui.log", "debug")
+		if err != nil {
+			fmt.Println("fatal:", err)
+			os.Exit(1)
+		}
+
+		log.Printf("=== SubTUI Started ===")
+		log.Printf("Config Loaded: %v", api.AppConfig.URL)
+
+		defer f.Close()
+	} else {
+		log.SetOutput(io.Discard)
+	}
+
 	_ = api.LoadConfig()
 
 	// Quiet MPV when TUI is killed

@@ -2,6 +2,7 @@ package player
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -29,6 +30,7 @@ type PlayerStatus struct {
 
 func InitPlayer() error {
 	socketPath := filepath.Join(os.TempDir(), fmt.Sprintf("subtui_mpv_socket_%d", os.Getuid()))
+	log.Printf("[Player] Initializing MPV IPC at %s", socketPath)
 
 	_ = exec.Command("pkill", "-f", socketPath).Run()
 	time.Sleep(200 * time.Millisecond)
@@ -56,6 +58,7 @@ func InitPlayer() error {
 	client := mpv.NewClient(ipcc)
 	mpvClient = client
 
+	log.Printf("[Player] MPV started successfully")
 	return nil
 }
 
@@ -66,6 +69,8 @@ func ShutdownPlayer() {
 }
 
 func PlaySong(songID string, startPaused bool) error {
+	log.Printf("[Player] PlaySong called for ID: %s (Paused: %v)", songID, startPaused)
+
 	if mpvClient == nil {
 		return fmt.Errorf("player not initialized")
 	}

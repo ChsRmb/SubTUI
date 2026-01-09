@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -120,13 +121,16 @@ func subsonicGET(endpoint string, params map[string]string) (*SubsonicResponse, 
 
 	fullUrl := baseUrl + "?" + v.Encode()
 
+	log.Printf("[API] Request: %s", fullUrl)
 	resp, err := http.Get(fullUrl)
 	if err != nil {
+		log.Printf("[API] Connection Failed: %v", err)
 		return nil, err
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
+		log.Printf("[API] HTTP Error: %d | URL: %s", resp.StatusCode, fullUrl)
 		return nil, fmt.Errorf("server error (HTTP %d)", resp.StatusCode)
 	}
 
